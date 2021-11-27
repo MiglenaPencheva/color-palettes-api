@@ -1,7 +1,7 @@
 const express = require('express');
 require('./config/mongoose');
 const cors = require('cors');
-const homeController = require('./controllers/homeController');
+// const homeController = require('./controllers/homeController');
 const colorPalettesController = require('./controllers/colorPalettesController');
 const authController = require('./controllers/authController');
 const auth = require('./middleware/auth');
@@ -11,9 +11,9 @@ const app = express();
 
 app.use(cors());                //{ exposedHeaders: 'Authorization' }
 app.use(express.json());
-app.use(auth());
+// app.use(auth());
 
-app.use('/', homeController);
+// app.use('/home', homeController);
 app.use('/color-palettes', colorPalettesController);
 app.use('/auth', authController);
 
