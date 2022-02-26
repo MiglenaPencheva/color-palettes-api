@@ -20,7 +20,7 @@ module.exports = {
     isOwner() {
         return (req, res, next) => {
             const product = req.data;
-            if (req.user._id != product.creator) {
+            if (req.user && req.user._id != product.creator) {
                 res.status(403).json({ message: 'You are not authorized to do this.' });
             } else {
                 next();
