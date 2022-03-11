@@ -2,12 +2,12 @@ const router = require('express').Router();
 const { register, login } = require('../services/authService');
 const { isGuest } = require('../middleware/guards');
 
-router.post('/login', async (req, res) => {
+router.post('/login', isGuest(), async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        if (!username) throw { message: 'Username required' };
-        if (!password) throw { message: 'Password required' };
+        if (username.trim() == '') throw { message: 'Username required' };
+        if (password.trim() == '') throw { message: 'Password required' };
         
         let token = await login(username, password);
         res.json(token);
@@ -17,14 +17,12 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/register', async (req, res) => {
-    let { username, password, repeatPassword } = req.body;
+router.post('/register', isGuest(), async (req, res) => {
+    let { username, password, } = req.body;
     
     try {
-        if (!username) throw { message: 'Username required' };
-        if (!password) throw { message: 'Password required' };
-        // if (!repeatPassword) throw { message: 'Password required' };
-        // if (password != repeatPassword) throw { message: 'Password mismatch!' };
+        if (username.trim() == '') throw { message: 'Username required' };
+        if (password.trim() == '') throw { message: 'Password required' };
         
         await register(username, password);
 

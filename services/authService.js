@@ -18,8 +18,9 @@ async function login(username, password) {
     let areEqual = await bcrypt.compare(password, user.password);
     if (!areEqual) throw { message: 'Wrong username or password', status: 401 };
 
-    let token = jwt.sign({ _id: user._id, username: user.username }, SECRET);
-    return token;
+    jwt.sign({ _id: user._id, username: user.username }, SECRET);
+    
+    return user;
 }
 
 module.exports = {

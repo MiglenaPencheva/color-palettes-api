@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { getAll, create, getOne, like, edit, remove } = require('../services/colorPalettesService');
 const { isAuth } = require('../middleware/guards');
-const { parseError } = require('../utils');
+// const { parseError } = require('../utils');
 const preload = require('../middleware/preload');
 
 router.get('/', async (req, res) => {
@@ -10,28 +10,26 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    // let data = extractData(req);
 
-    let { name, type, imageUrl, creator } = req.body;
+    let { title, type, imageUrl, creator } = req.body;
     let productData = {
-        name,
+        title,
         type,
         imageUrl,
         creator
     };
 
     try {
-        // if (!data.title) throw { message: 'Title is required' };
-        // if (!data.type) throw { message: 'Type is required' };
-        // if (!data.imageUrl) throw { message: 'Image is required' };
+        if (!productData.title) throw { message: 'Title is required' };
+        if (!productData.type) throw { message: 'Type is required' };
+        if (!productData.imageUrl) throw { message: 'Image is required' };
 
         const result = await create(productData);
         res.status(201).json(result);
 
     } catch (error) {
         // const message = parseError(error);
-        // res.status(error.status || 400).json({ message });
-        res.status(error.status || 400);
+        res.status(error.status || 400).json({ message: error.message });
     }
 });
 
