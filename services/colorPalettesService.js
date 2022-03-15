@@ -4,26 +4,27 @@ async function getAll(query) {
     return await ColorPalette
         .find({ title: { $regex: query || '', $options: 'i' } })
         // .sort({ likedBy: -1 })
+        // .sort({ 'created_at': 1 })
         .lean();
 }
 
-async function getOne(colorPaletteId, userId) {
+// async function getMine(query, userId) {
+//     return await Task
+//         .find({
+//             creator: userId,
+//             content: { $regex: query || '', $options: 'i' }
+//         })
+//         .sort({ 'created_at': 1 })
+//         .lean();
+// }
+
+async function getOne(colorPaletteId) {
     let colorPalette = await ColorPalette.findById(colorPaletteId).lean();
-    colorPalette.isOwn = colorPalette.creator == userId;
-    if (colorPalette.likedBy) {
-        colorPalette.isLiked = colorPalette.likedBy.toString().includes(userId);
-    }
     return colorPalette;
 }
 
-// async function create(colorPaletteData, userId) {
-//     let colorPalette = new ColorPalette(colorPaletteData);
-//     colorPalette.creator = userId;
-//     return colorPalette.save();
-// }
 async function create(colorPaletteData) {
     let colorPalette = new ColorPalette(colorPaletteData);
-    // colorPalette.creator = userId;
     return colorPalette.save();
 }
 
@@ -49,6 +50,7 @@ async function remove(colorPaletteId) {
 
 module.exports = {
     getAll,
+    // getMine,
     getOne,
     create,
     like,

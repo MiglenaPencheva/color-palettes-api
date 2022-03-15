@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const { getAll, create, getOne, like, edit, remove } = require('../services/colorPalettesService');
-const { isAuth } = require('../middleware/guards');
-// const { parseError } = require('../utils');
-const preload = require('../middleware/preload');
+// const { isAuth } = require('../middleware/guards');
+// const preload = require('../middleware/preload');
 
 router.get('/', async (req, res) => {
     const data = await getAll(req.query.search);
@@ -23,42 +22,44 @@ router.post('/', async (req, res) => {
         if (!productData.title) throw { message: 'Title is required' };
         if (!productData.type) throw { message: 'Type is required' };
         if (!productData.imageUrl) throw { message: 'Image is required' };
-
+        if (productData.imageUrl.slice(0, 7) != 'http://' && 
+            productData.imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };
+        
         const result = await create(productData);
+
         res.status(201).json(result);
 
     } catch (error) {
-        // const message = parseError(error);
         res.status(error.status || 400).json({ message: error.message });
     }
 });
 
-router.get('/:id/details', isAuth, preload, async (req, res) => {
-    let data = await getOne(req.params.id, req.user._id);
-    res.json(data);
-});
-
-router.get('/:id/like', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        let data = await like(req.params.id, req.user._id);
-        res.json(data); 
+        let data = await getOne(req.params.id);
+        res.json(data);
     } catch (error) {
-        res.status(error.status || 400).json({ message })
+        res.status(error.status || 400).json({ message: error.message });
     }
 });
 
-router.post('/:id/edit', async (req, res) => {
-    let data = extractData(req);
+router.post('/:id', async (req, res) => {
     try {
-        if (!data.title) throw { message: 'Title is required' };
-        if (!data.description) throw { message: 'Description is required' };
-        if (!data.imageUrl) throw { message: 'Image is required' };
-
+        let data = extractData(req);
         const product = await getOne(req.params.id, req.user._id);
         if (product.creator == req.user._id) {
             await edit(req.params.id, data);
             res.json(data);
         }
+    } catch (error) {
+        res.status(error.status || 400).json({ message })
+    }
+});
+
+router.get('/:id/like', async (req, res) => {
+    try {
+        let data = await like(req.params.id, req.user._id);
+        res.json(data);
     } catch (error) {
         res.status(error.status || 400).json({ message })
     }
@@ -79,12 +80,21 @@ router.get('/:id/delete', async (req, res) => {
 function extractData(req) {
     let { title, type, imageUrl, creator } = req.body;
 
-    return productData = {
-        title,
-        type,
-        imageUrl,
-        creator
-    };
+    try {
+        if (!title) throw { message: 'Title is required' };
+        if (!type) throw { message: 'Type is required' };
+        if (!imageUrl) throw { message: 'Image is required' };
+
+        return productData = {
+            title,
+            type,
+            imageUrl,
+            creator
+        };
+    } catch (error) {
+        return({ message: error.message });
+    }
+
 }
 
 module.exports = router;
