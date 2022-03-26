@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getAll, create, getOne, like, edit, remove } = require('../services/colorPalettesService');
+const { getAll, getMine, create, getOne, like, edit, remove } = require('../services/colorPalettesService');
 // const { isAuth } = require('../middleware/guards');
 // const preload = require('../middleware/preload');
 
@@ -8,19 +8,25 @@ router.get('/', async (req, res) => {
     res.json(data);
 });
 
+// router.get('/', async (req, res) => {
+//     const data = await getMine(req.query.search);
+//     res.json(data);
+// });
+
 router.post('/', async (req, res) => {
 
-    let { title, type, imageUrl, creator } = req.body;
+    let { title, category, imageUrl, creator } = req.body;
     let productData = {
         title,
-        type,
+        category,
         imageUrl,
         creator
     };
 
     try {
         if (!productData.title) throw { message: 'Title is required' };
-        if (!productData.type) throw { message: 'Type is required' };
+        if (productData.title.length > 100) throw { message: 'Title should be less than 100 characters' };
+        if (!productData.category) throw { message: 'Category is required' };
         if (!productData.imageUrl) throw { message: 'Image is required' };
         if (productData.imageUrl.slice(0, 7) != 'http://' && 
             productData.imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };
@@ -56,7 +62,7 @@ router.post('/:id', async (req, res) => {
     }
 });
 
-router.get('/:id/like', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         let data = await like(req.params.id, req.user._id);
         res.json(data);
@@ -65,7 +71,7 @@ router.get('/:id/like', async (req, res) => {
     }
 });
 
-router.get('/:id/delete', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         let data = await getOne(req.params.id, req.user._id);
         if (data.creator == req.user._id) {
