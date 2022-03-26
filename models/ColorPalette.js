@@ -8,9 +8,9 @@ const colorPaletteScheme = new mongoose.Schema({
         minLength: [0, 'Title is required'],
         maxLength: [100, 'Title should be less than 100 characters']
     },
-    type: {
+    category: {
         type: String,
-        required: ['Type is required']
+        required: ['Category is required']
     },
     imageUrl: {
         type: String,
