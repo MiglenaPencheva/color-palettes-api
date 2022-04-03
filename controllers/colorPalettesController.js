@@ -15,10 +15,11 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
 
-    let { title, category, imageUrl, creator } = req.body;
+    let { title, category, colorGroup, imageUrl, creator } = req.body;
     let productData = {
         title,
         category,
+        colorGroup,
         imageUrl,
         creator
     };
@@ -27,6 +28,7 @@ router.post('/', async (req, res) => {
         if (!productData.title) throw { message: 'Title is required' };
         if (productData.title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!productData.category) throw { message: 'Category is required' };
+        if (colorGroup.length == 0) throw { message: 'Choose at least one color' }
         if (!productData.imageUrl) throw { message: 'Image is required' };
         if (productData.imageUrl.slice(0, 7) != 'http://' && 
             productData.imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };

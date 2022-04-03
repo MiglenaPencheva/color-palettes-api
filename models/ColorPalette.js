@@ -28,6 +28,10 @@ const colorPaletteScheme = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User',
     }],
+    colorGroup: {
+        type: Array,
+        required: true,
+    }
 },
     {
         timestamps: {
