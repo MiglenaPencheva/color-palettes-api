@@ -28,6 +28,12 @@ const colorPaletteScheme = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User',
     }],
-});
+},
+    {
+        timestamps: {
+            createdAt: 'created_at',
+            updatedAt: 'updated_at'
+        }
+    });
 
 module.exports = mongoose.model('Product', colorPaletteScheme);
