@@ -1,17 +1,15 @@
-const jwt = require('jsonwebtoken');
-const { SECRET } = require('../config/config');
+const verifySession = require('../services/authService');
 
 module.exports = () => (req, res, next) => {
     const token = req.headers['x-authorization'];
 
     try {
         if (token) {
-            const userData = jwt.verify(token, SECRET);
+            const userData = verifySession(token);
             req.user = userData;
+            next();
         }
     } catch (error) {
-        console.log(error.message);
-        // res.status(401).json({ message: 'Невалидна потребителска сесия. Влез в профила си.' });
+        res.status(401).json({ message: 'Invalid access token. Please sign in' });
     }
-    next();
 };
