@@ -1,39 +1,25 @@
 const router = require('express').Router();
-const { getAll, getMine, create, getOne, like, edit, remove } = require('../services/colorPalettesService');
-// const { isAuth } = require('../middleware/guards');
-// const preload = require('../middleware/preload');
+const { getAll, getMine, create, like, update, remove } = require('../services/colorPalettesService');
+const { isAuth, isOwner, isNotOwner } = require('../middleware/guards');
+const preload = require('../middleware/preload');
 
 router.get('/', async (req, res) => {
     const data = await getAll(req.query.search);
     res.json(data);
 });
 
-// router.get('/', async (req, res) => {
-//     const data = await getMine(req.query.search);
-//     res.json(data);
-// });
+router.get('/my', isAuth(), async (req, res) => {
+    console.log(req.user);
+    const data = await getMine(req.user._id);
+    console.log(data);
+    res.json(data);
+});
 
-router.post('/', async (req, res) => {
-
-    let { title, category, colorGroup, imageUrl, creator } = req.body;
-    let productData = {
-        title,
-        category,
-        colorGroup,
-        imageUrl,
-        creator
-    };
-
+router.post('/', isAuth(), async (req, res) => {
     try {
-        if (!productData.title) throw { message: 'Title is required' };
-        if (productData.title.length > 100) throw { message: 'Title should be less than 100 characters' };
-        if (!productData.category) throw { message: 'Category is required' };
-        if (colorGroup.length == 0) throw { message: 'Choose at least one color' }
-        if (!productData.imageUrl) throw { message: 'Image is required' };
-        if (productData.imageUrl.slice(0, 7) != 'http://' && 
-            productData.imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };
-        
-        const result = await create(productData);
+        const item = extractData(req);
+        item.likedBy = [];
+        const result = await create(item);
 
         res.status(201).json(result);
 
@@ -42,67 +28,72 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', preload(), async (req, res) => {
     try {
-        let data = await getOne(req.params.id);
-        res.json(data);
+        const item = res.locals.item;
+        res.json(item);
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message });
     }
 });
 
-router.post('/:id', async (req, res) => {
+router.put('/:id', preload(), isOwner(), async (req, res) => {
     try {
-        let data = extractData(req);
-        const product = await getOne(req.params.id, req.user._id);
-        if (product.creator == req.user._id) {
-            await edit(req.params.id, data);
-            res.json(data);
-        }
+        const itemId = res.params.id;
+        const updated = extractData(req);
+        const result = await update(itemId, updated);
+        res.json(result);
     } catch (error) {
-        res.status(error.status || 400).json({ message })
+        res.status(error.status || 400).json({ message: error.message })
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', preload(), isNotOwner(), async (req, res) => {
     try {
-        let data = await like(req.params.id, req.user._id);
-        res.json(data);
+        const itemId = req.params.id;
+        const userId = req.user._id;
+        const result = await like(itemId, userId);
+        res.json(result);
+
     } catch (error) {
-        res.status(error.status || 400).json({ message })
+        res.status(error.status || 400).json({ message: error.message })
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', preload(), isOwner(), async (req, res) => {
     try {
-        let data = await getOne(req.params.id, req.user._id);
-        if (data.creator == req.user._id) {
-            await remove(req.params.id);
-            res.status(204).end();
-        }
+        const itemId = req.params.id;
+        await remove(itemId);
+        res.status(204).end();
+        
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message })
     }
 });
 
 function extractData(req) {
-    let { title, type, imageUrl, creator } = req.body;
-
     try {
+        const { title, category, colorGroup, imageUrl, creator } = req.body;
+        
         if (!title) throw { message: 'Title is required' };
-        if (!type) throw { message: 'Type is required' };
+        if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
+        if (!category) throw { message: 'Category is required' };
+        if (colorGroup.length == 0) throw { message: 'Choose at least one color' }
         if (!imageUrl) throw { message: 'Image is required' };
-
-        return productData = {
+        if (imageUrl.slice(0, 7) != 'http://' && 
+            imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };
+        
+        return item = {
             title,
-            type,
+            category,
+            colorGroup,
             imageUrl,
             creator
         };
+
     } catch (error) {
         return({ message: error.message });
     }
-
 }
 
 module.exports = router;

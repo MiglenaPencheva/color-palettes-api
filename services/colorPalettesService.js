@@ -8,52 +8,52 @@ async function getAll(query) {
         .lean();
 }
 
-// async function getMine(query, userId) {
-//     return await Task
-//         .find({
-//             creator: userId,
-//             content: { $regex: query || '', $options: 'i' }
-//         })
-//         .sort({ 'created_at': 1 })
-//         .lean();
-// }
-
-async function getOne(colorPaletteId) {
-    let colorPalette = await ColorPalette.findById(colorPaletteId).lean();
-    return colorPalette;
+async function getMine(userId) {
+    return await ColorPalette
+        .find({ creator: userId })
+        .sort({ 'created_at': 1 })
+        .lean();
 }
 
-async function create(colorPaletteData) {
-    let colorPalette = new ColorPalette(colorPaletteData);
-    return colorPalette.save();
+async function create(item) {
+    const result = new ColorPalette(item);
+    await result.save();
+    return result;
+}
+
+function getOne(colorPaletteId) {
+    return ColorPalette.findById(colorPaletteId);
 }
 
 async function like(colorPaletteId, userId) {
-    let colorPalette = await ColorPalette.findById(colorPaletteId);
-    
-    if (colorPalette.creator == userId) return;
-    if (colorPalette.likedBy.toString().includes(userId)) return;
-
-    colorPalette.likedBy.push(userId);
-    colorPalette.isLiked = true;
-
-    return colorPalette.save();
+    const existing = await ColorPalette.findById(colorPaletteId);
+    existing.likedBy.push(userId);
+    await existing.save();
 }
 
-async function edit(colorPaletteId, editedData) {
-    return await ColorPalette.updateOne({ _id: colorPaletteId }, editedData);
+async function update(id, item) {
+    const existing = await ColorPalette.findById(id);
+
+    existing.title = item.title;
+    existing.category = item.category;
+    existing.colorGroup = item.colorGroup;
+    existing.imageUrl = item.imageUrl;
+
+    await existing.save();
+
+    return existing;
 }
 
 async function remove(colorPaletteId) {
-    return await ColorPalette.deleteOne({ _id: colorPaletteId });
+    await ColorPalette.findByIdAndDelete(colorPaletteId);
 }
 
 module.exports = {
     getAll,
-    // getMine,
+    getMine,
     getOne,
     create,
+    update,
     like,
-    edit,
     remove,
 };

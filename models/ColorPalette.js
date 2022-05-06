@@ -12,6 +12,10 @@ const colorPaletteScheme = new mongoose.Schema({
         type: String,
         required: ['Category is required']
     },
+    colorGroup: {
+        type: Array,
+        required: true,
+    },
     imageUrl: {
         type: String,
         required: ['Image is required'],
@@ -27,11 +31,7 @@ const colorPaletteScheme = new mongoose.Schema({
     likedBy: [{
         type: mongoose.Types.ObjectId,
         ref: 'User',
-    }],
-    colorGroup: {
-        type: Array,
-        required: true,
-    }
+    }]
 },
     {
         timestamps: {
