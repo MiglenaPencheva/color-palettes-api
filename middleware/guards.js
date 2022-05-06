@@ -2,7 +2,7 @@ module.exports = {
     isAuth() {
         return (req, res, next) => {
             if (!req.user) {
-                res.status(401).json({ message: 'Log in to your account.' });
+                res.status(401).json({ message: 'Please log in' });
             } else {
                 next();
             }
@@ -11,7 +11,7 @@ module.exports = {
     isGuest() {
         return (req, res, next) => {
             if (req.user) {
-                res.status(400).json({ message: 'You are already logged in.' });
+                res.status(400).json({ message: 'You are already signed in.' });
             } else {
                 next();
             }
@@ -19,9 +19,17 @@ module.exports = {
     },
     isOwner() {
         return (req, res, next) => {
-            const product = req.data;
-            if (req.user && req.user._id != product.creator) {
-                res.status(403).json({ message: 'You are not authorized to do this.' });
+            if (req.user && req.user._id != res.locals.item.creator) {
+                res.status(403).json({ message: 'You can not modify this record' });
+            } else {
+                next();
+            }
+        };
+    },
+    isNotOwner() {
+        return (req, res, next) => {
+            if (req.user && req.user._id == res.locals.item.creator) {
+                res.status(403).json({ message: 'You can not like this record' });
             } else {
                 next();
             }
