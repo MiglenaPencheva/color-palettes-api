@@ -21,18 +21,12 @@ async function create(item) {
     return result;
 }
 
-function getOne(colorPaletteId) {
-    return ColorPalette.findById(colorPaletteId);
+function getOne(itemId) {
+    return ColorPalette.findById(itemId);
 }
 
-async function like(colorPaletteId, userId) {
-    const existing = await ColorPalette.findById(colorPaletteId);
-    existing.likedBy.push(userId);
-    await existing.save();
-}
-
-async function update(id, item) {
-    const existing = await ColorPalette.findById(id);
+async function update(itemId, item) {
+    const existing = await ColorPalette.findById(itemId);
 
     existing.title = item.title;
     existing.category = item.category;
@@ -40,12 +34,18 @@ async function update(id, item) {
     existing.imageUrl = item.imageUrl;
 
     await existing.save();
-
     return existing;
 }
 
-async function remove(colorPaletteId) {
-    await ColorPalette.findByIdAndDelete(colorPaletteId);
+async function like(itemId, userId) {
+    const existing = await ColorPalette.findById(itemId);
+    existing.likedBy.push(userId);
+    await existing.save();
+    return existing;
+}
+
+async function remove(itemId) {
+    await ColorPalette.findByIdAndDelete(itemId);
 }
 
 module.exports = {

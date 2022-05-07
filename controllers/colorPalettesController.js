@@ -9,9 +9,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/my', isAuth(), async (req, res) => {
-    console.log(req.user);
     const data = await getMine(req.user._id);
-    console.log(data);
     res.json(data);
 });
 
@@ -19,10 +17,9 @@ router.post('/', isAuth(), async (req, res) => {
     try {
         const item = extractData(req);
         item.likedBy = [];
+        item.creator = req.user._id;
         const result = await create(item);
-
         res.status(201).json(result);
-
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message });
     }
@@ -39,9 +36,9 @@ router.get('/:id', preload(), async (req, res) => {
 
 router.put('/:id', preload(), isOwner(), async (req, res) => {
     try {
-        const itemId = res.params.id;
-        const updated = extractData(req);
-        const result = await update(itemId, updated);
+        const itemId = req.params.id;
+        const item = extractData(req);
+        const result = await update(itemId, item);
         res.json(result);
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message })
@@ -54,7 +51,6 @@ router.put('/:id', preload(), isNotOwner(), async (req, res) => {
         const userId = req.user._id;
         const result = await like(itemId, userId);
         res.json(result);
-
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message })
     }
@@ -65,7 +61,6 @@ router.delete('/:id', preload(), isOwner(), async (req, res) => {
         const itemId = req.params.id;
         await remove(itemId);
         res.status(204).end();
-        
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message })
     }
@@ -73,26 +68,25 @@ router.delete('/:id', preload(), isOwner(), async (req, res) => {
 
 function extractData(req) {
     try {
-        const { title, category, colorGroup, imageUrl, creator } = req.body;
-        
+        const { title, category, colorGroup, imageUrl } = req.body;
+
         if (!title) throw { message: 'Title is required' };
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
-        if (!category) throw { message: 'Category is required' };
+        if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colorGroup.length == 0) throw { message: 'Choose at least one color' }
         if (!imageUrl) throw { message: 'Image is required' };
-        if (imageUrl.slice(0, 7) != 'http://' && 
+        if (imageUrl.slice(0, 7) != 'http://' &&
             imageUrl.slice(0, 8) != 'https://') throw { message: 'Invalid image URL' };
-        
+
         return item = {
             title,
             category,
             colorGroup,
-            imageUrl,
-            creator
+            imageUrl
         };
 
     } catch (error) {
-        return({ message: error.message });
+        return ({ message: error.message });
     }
 }
 
