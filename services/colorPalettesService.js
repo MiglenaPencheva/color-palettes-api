@@ -11,7 +11,7 @@ async function getAll(query) {
 async function getMine(userId) {
     return await ColorPalette
         .find({ creator: userId })
-        .sort({ 'created_at': 1 })
+        .sort({ 'created_at': -1 })
         .lean();
 }
 
