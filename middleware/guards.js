@@ -25,14 +25,5 @@ module.exports = {
                 next();
             }
         };
-    },
-    isNotOwner() {
-        return (req, res, next) => {
-            if (req.user && req.user._id == res.locals.item.creator) {
-                res.status(403).json({ message: 'You can not like this record' });
-            } else {
-                next();
-            }
-        };
     }
 }

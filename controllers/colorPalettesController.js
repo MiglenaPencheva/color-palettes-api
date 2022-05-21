@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { getAll, getMine, create, like, update, remove } = require('../services/colorPalettesService');
-const { isAuth, isOwner, isNotOwner } = require('../middleware/guards');
+const { getAll, getMine, getFavorites, create, like, update, remove } = require('../services/colorPalettesService');
+const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
 router.get('/', async (req, res) => {
@@ -10,6 +10,11 @@ router.get('/', async (req, res) => {
 
 router.get('/my', isAuth(), async (req, res) => {
     const data = await getMine(req.user._id);
+    res.json(data);
+});
+
+router.get('/favorites', isAuth(), async (req, res) => {
+    const data = await getFavorites(req.user._id);
     res.json(data);
 });
 

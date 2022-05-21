@@ -15,6 +15,13 @@ async function getMine(userId) {
         .lean();
 }
 
+async function getFavorites(userId) {
+    return await ColorPalette
+        .find({ likedBy: userId })
+        .sort({ 'created_at': -1 })
+        .lean();
+}
+
 async function create(item) {
     const result = new ColorPalette(item);
     await result.save();
@@ -56,6 +63,7 @@ async function remove(itemId) {
 module.exports = {
     getAll,
     getMine,
+    getFavorites,
     getOne,
     create,
     update,
