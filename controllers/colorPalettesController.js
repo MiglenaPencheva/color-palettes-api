@@ -34,23 +34,20 @@ router.get('/:id', preload(), async (req, res) => {
     }
 });
 
-router.put('/:id', preload(), isOwner(), async (req, res) => {
+router.put('/:id', preload(), async (req, res) => {   //isOwner(),
     try {
         const itemId = req.params.id;
         const item = extractData(req);
-        const result = await update(itemId, item);
-        res.json(result);
-    } catch (error) {
-        res.status(error.status || 400).json({ message: error.message })
-    }
-});
 
-router.put('/:id', preload(), isNotOwner(), async (req, res) => {
-    try {
-        const itemId = req.params.id;
-        const userId = req.user._id;
-        const result = await like(itemId, userId);
-        res.json(result);
+        if (req.user) {
+            if (req.user._id == res.locals.item.creator) {
+                const result = await update(itemId, item);
+                res.json(result);
+            } else {
+                const result = await like(itemId, req.user._id);
+                res.json(result);
+            }
+        }
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message })
     }

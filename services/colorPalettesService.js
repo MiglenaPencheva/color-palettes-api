@@ -39,9 +39,14 @@ async function update(itemId, item) {
 
 async function like(itemId, userId) {
     const existing = await ColorPalette.findById(itemId);
-    existing.likedBy.push(userId);
-    await existing.save();
-    return existing;
+
+    if (!existing.likedBy.includes(userId)) {
+        existing.likedBy.push(userId);
+        await existing.save();
+        return existing;
+    } else {
+        return { message: 'You have already liked this' };
+    }
 }
 
 async function remove(itemId) {
