@@ -12,18 +12,23 @@ const colorPaletteScheme = new mongoose.Schema({
         type: String,
         required: ['Category is required']
     },
-    colorGroup: {
-        type: Array,
+    colors: {
+        // type: Array,
+        type: String,
         required: true,
     },
-    imageUrl: {
+    imageFile: {
         type: String,
-        required: ['Image is required'],
-        validate: {
-            validator: (v) => /^https?:\/\//,
-            message: (props) => `Invalid URL`
-        }
+        required: ['Image is required']
     },
+    // imageUrl: {
+    //     type: String,
+    //     required: ['Image is required'],
+    //     validate: {
+    //         validator: (v) => /^https?:\/\//,
+    //         message: (props) => `Invalid URL`
+    //     }
+    // },
     creator: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
