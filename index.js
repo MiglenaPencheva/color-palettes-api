@@ -11,6 +11,7 @@ const { PORT } = require('./config/config');
 const app = express();
 
 app.use(cors());                //{ exposedHeaders: 'Authorization' }
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(auth());
 
