@@ -4,28 +4,27 @@ const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, './uploads');
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, Date.now() + '--' + file.originalname);
-//         // cb(null, new Date().toISOString() + file.originalname);
-//     }
-// });
-// const upload = multer({
-//     storage: storage,
-//     limits: { fileSize: 1024 * 1024 * 10 },
-//     fileFilter: (req, file, cb) => {
-//         if (file.mimetype === "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-//             cb(null, true);
-//         } else {
-//             cb(null, false);
-//             // return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-//         }
-//     }
-// });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '--' + file.originalname);
+        // cb(null, new Date() + file.originalname);
+    }
+});
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 15 },
+    // fileFilter: (req, file, cb) => {
+    //     if (file.mimetype === "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+    //         cb(null, true);
+    //     } else {
+    //         cb(new Error('Only .png, .jpg and .jpeg format allowed!'), false);
+    //         // return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    //     }
+    // }
+});
 
 router.get('/', async (req, res) => {
     const data = await getAll(req.query.search);
@@ -42,22 +41,28 @@ router.get('/favorites', isAuth(), async (req, res) => {
     res.json(data);
 });
 
-router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => { 
+router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
-        const { title, category, colors } = req.body;
-        const imageFile = req.file.originalname;
-        
-        // if (file.detectedFileExtension != '.jpeg' ||
-        // file.detectedFileExtension != '.jpg' ||
-        // file.detectedFileExtension != '.png') {
-        //     throw new Error ('Invalid file type');
+        // if (req.file == undefined) throw { message: 'No image available' }
+        // if (req.file.size >= 1024 * 1024 * 10) {
+        //     throw { message: 'Image too big' } 
         // }
+        // if (req.file.mimetype != '.jpeg' ||
+        //     req.file.mimetype != '.jpg' ||
+        //     req.file.mimetype != '.png') {
+        //     throw { message: 'Invalid file type' };
+        // }
+        const { title, category, colors } = req.body;
+
         if (!title) throw { message: 'Title is required' };
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
-        if (imageFile == '') throw { message: 'Image is required' }
-        
+       
+        const file = req.file.path;
+        if (file == '') throw { message: 'Image is required' }
+        imageFile = 'http://localhost:5500/' + file;
+
         const item = {
             title,
             category,
