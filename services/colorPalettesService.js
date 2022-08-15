@@ -37,8 +37,7 @@ async function update(itemId, item) {
 
     existing.title = item.title;
     existing.category = item.category;
-    existing.colorGroup = item.colorGroup;
-    existing.imageUrl = item.imageUrl;
+    existing.colors = item.colors;
 
     await existing.save();
     return existing;

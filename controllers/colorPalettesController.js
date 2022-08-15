@@ -63,12 +63,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (file == '') throw { message: 'Image is required' }
         imageFile = 'http://localhost:5500/' + file;
 
-        const item = {
-            title,
-            category,
-            colors,
-            imageFile
-        }
+        const item = { title, category, colors, imageFile }
         item.likedBy = [];
         item.creator = req.user._id;
 
@@ -91,7 +86,19 @@ router.get('/:id', preload(), async (req, res) => {
 router.put('/:id', preload(), async (req, res) => {   //isOwner(),
     try {
         const itemId = req.params.id;
+        if (!itemId) throw { message: 'ItemId required' };
+
         const { title, category, colors } = req.body;
+        
+        if (!title) throw { message: 'Title is required' };
+        if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
+        if (!category || category == 'Choose category') throw { message: 'Category is required' };
+        if (colors == '') throw { message: 'Choose at least one color' }
+        
+        // const file = req.file.path;
+        // if (file == '') throw { message: 'Image is required' }
+        // imageFile = 'http://localhost:5500/' + file;
+        
         const item = { title, category, colors };
 
         if (req.user) {
