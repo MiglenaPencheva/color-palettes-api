@@ -8,19 +8,19 @@ async function getAll(query) {
         .lean();
 }
 
-async function getMine(userId) {
-    return await ColorPalette
-        .find({ creator: userId })
-        .sort({ 'created_at': -1 })
-        .lean();
-}
+// async function getMine(userId) {
+//     return await ColorPalette
+//         .find({ creator: userId })
+//         .sort({ 'created_at': -1 })
+//         .lean();
+// }
 
-async function getFavorites(userId) {
-    return await ColorPalette
-        .find({ likedBy: userId })
-        .sort({ 'created_at': -1 })
-        .lean();
-}
+// async function getFavorites(userId) {
+//     return await ColorPalette
+//         .find({ likedBy: userId })
+//         .sort({ 'created_at': -1 })
+//         .lean();
+// }
 
 async function create(item) {
     const result = new ColorPalette(item);
@@ -38,7 +38,7 @@ async function update(itemId, item) {
     existing.title = item.title;
     existing.category = item.category;
     existing.colors = item.colors;
-
+    
     await existing.save();
     return existing;
 }
@@ -61,8 +61,8 @@ async function remove(itemId) {
 
 module.exports = {
     getAll,
-    getMine,
-    getFavorites,
+    // getMine,
+    // getFavorites,
     getOne,
     create,
     update,

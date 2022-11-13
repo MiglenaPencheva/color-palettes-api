@@ -1,5 +1,7 @@
 const router = require('express').Router();
-const { getAll, getMine, getFavorites, create, like, update, remove } = require('../services/colorPalettesService');
+const fs = require('fs');
+
+const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
@@ -31,15 +33,15 @@ router.get('/', async (req, res) => {
     res.json(data);
 });
 
-router.get('/my', isAuth(), async (req, res) => {
-    const data = await getMine(req.user._id);
-    res.json(data);
-});
+// router.get('/my', isAuth(), async (req, res) => {
+//     const data = await getMine(req.user._id);
+//     res.json(data);
+// });
 
-router.get('/favorites', isAuth(), async (req, res) => {
-    const data = await getFavorites(req.user._id);
-    res.json(data);
-});
+// router.get('/favorites', isAuth(), async (req, res) => {
+//     const data = await getFavorites(req.user._id);
+//     res.json(data);
+// });
 
 router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
@@ -54,16 +56,25 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         // }
         const { title, category, colors } = req.body;
 
+        // const decodedData = Buffer.from(blob, 'base64');
+        // console.log(decodedData);
+
+        // const imageFile = fs.writeFile('image.png', blob, function (err) {
+        //     console.log('File created');
+        // });
+        // console.log(imageFile);
+
         if (!title) throw { message: 'Title is required' };
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
-       
+
         const file = req.file.path;
         if (file == '') throw { message: 'Image is required' }
         imageFile = 'http://localhost:5500/' + file;
 
-        const item = { title, category, colors, imageFile }
+        // const item = { title, category, colors,  };
+        const item = { title, category, colors, imageFile };
         item.likedBy = [];
         item.creator = req.user._id;
 
@@ -89,16 +100,16 @@ router.put('/:id', preload(), async (req, res) => {   //isOwner(),
         if (!itemId) throw { message: 'ItemId required' };
 
         const { title, category, colors } = req.body;
-        
+
         if (!title) throw { message: 'Title is required' };
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
-        
+
         // const file = req.file.path;
         // if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        
+
         const item = { title, category, colors };
 
         if (req.user) {
