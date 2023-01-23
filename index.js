@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 require('./config/mongoose');
 const cors = require('cors');
@@ -7,6 +9,8 @@ const pickerController = require('./controllers/pickerController');
 const authController = require('./controllers/authController');
 const auth = require('./middleware/auth');
 const { PORT } = require('./config/config');
+
+console.log(process.env.NODE_ENV);
 
 const app = express();
 
