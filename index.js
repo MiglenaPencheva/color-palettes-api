@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 require('./config/mongoose');
 const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
 // const homeController = require('./controllers/homeController');
 const colorPalettesController = require('./controllers/colorPalettesController');
 const pickerController = require('./controllers/pickerController');
@@ -14,7 +15,7 @@ console.log(process.env.NODE_ENV);
 
 const app = express();
 
-app.use(cors());                //{ exposedHeaders: 'Authorization' }
+app.use(cors(corsOptions));                //{ exposedHeaders: 'Authorization' }
 app.use('/uploads', express.static('uploads'));
 // app.use(express.json());
 app.use(express.json({limit: '50mb'}));
