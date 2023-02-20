@@ -9,6 +9,7 @@ const corsOptions = {
         }
     },
     credentials: true,
+    exposedHeaders: 'Authorization',
     optionsSuccessStatus: 200
 }
 
