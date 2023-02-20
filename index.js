@@ -1,19 +1,26 @@
 require('dotenv').config();
 
 const express = require('express');
-require('./config/mongoose');
+const app = express();
+
+const connectDB = require('./config/mongoose');
+const mongoose = require('mongoose');
+// const { PORT } = require('./config/config');
+const PORT = process.env.PORT || 5500;
+
+console.log(process.env.NODE_ENV);
+
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 // const homeController = require('./controllers/homeController');
+
 const colorPalettesController = require('./controllers/colorPalettesController');
 const pickerController = require('./controllers/pickerController');
 const authController = require('./controllers/authController');
 const auth = require('./middleware/auth');
-const { PORT } = require('./config/config');
 
-console.log(process.env.NODE_ENV);
 
-const app = express();
+connectDB();
 
 app.use(cors(corsOptions));                //{ exposedHeaders: 'Authorization' }
 app.use('/uploads', express.static('uploads'));
@@ -30,4 +37,9 @@ app.get('/', (req, res) => {
     res.send('REST Service operational.');      //  Send requests to /api
 });
 
-app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+});
+
+mongoose.connection.on('error', console.error.bind(console, 'DB connection error:'));
