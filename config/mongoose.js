@@ -8,9 +8,18 @@ const { DB_URI } = require('./config');
     // useCreateIndex: true,
     // useFindAndModify: false,
 // };
-// mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false);
 
-mongoose.connect(DB_URI);
+// mongoose.connect(DB_URI);
+const connectDB = async () => {
+    try {
+        await mongoose.connect(DB_URI);
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+connectDB();
 
 const db = mongoose.connection;
 
