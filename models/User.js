@@ -13,6 +13,14 @@ const userScheme = new mongoose.Schema({
         required: true,
         trim: true,
     }
+    // roles: [{
+    //     type: String,
+    //     default: "Employee"
+    // }],
+    // active: {
+    //     type: Boolean,
+    //     default: true
+    // }
 });
 
 userScheme.pre('save', async function (next) {
