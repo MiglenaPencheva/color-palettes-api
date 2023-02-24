@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const fs = require('fs');
+// const fs = require('fs');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
@@ -72,7 +72,6 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         const file = req.file.path;
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        // imageFile = 'https://colorpalettes-api/' + file;
         imageFile = 'https://colorpalettes-api.onrender.com/' + file;
 
         // const item = { title, category, colors,  };
@@ -107,10 +106,6 @@ router.put('/:id', preload(), async (req, res) => {   //isOwner(),
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
-
-        // const file = req.file.path;
-        // if (file == '') throw { message: 'Image is required' }
-        // imageFile = 'http://localhost:5500/' + file;
 
         const item = { title, category, colors };
 
