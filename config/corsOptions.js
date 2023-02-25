@@ -1,4 +1,8 @@
-const allowedOrigins = require('./allowedOrigins')
+// const allowedOrigins = require('./allowedOrigins')
+const allowedOrigins = [
+    'https://megacolormix.onrender.com',
+    'https://megacolormix.com',
+];
 
 const corsOptions = {
     origin: (origin, callback) => {
