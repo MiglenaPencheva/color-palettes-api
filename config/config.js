@@ -24,10 +24,9 @@ const config = {
     },
     production: {
         PORT: process.env.PORT || 443,
-        DB_URI: 'mongodb+srv://mega:megacluster@colorpalettescluster.pzuksw4.mongodb.net/?retryWrites=true&w=majority',
-        // DB_URI: process.env.DATABASE_URI,
+        DB_URI: process.env.DATABASE_URI,
         SALT_ROUNDS: 10,
-        SECRET: 'STAVAMNOGOSOLENO',
+        SECRET: process.env.SECRET,
         COOKIE_NAME: 'TOKEN',
     }
 };
