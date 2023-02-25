@@ -26,7 +26,7 @@ const config = {
         PORT: process.env.PORT || 443,
         DB_URI: process.env.DATABASE_URI,
         SALT_ROUNDS: 10,
-        SECRET: process.env.SECRET,
+        SECRET: 'STAVAMNOGOSOLENO',
         COOKIE_NAME: 'TOKEN',
     }
 };
