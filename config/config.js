@@ -12,7 +12,7 @@
 // module.exports = config;
 
 // 2
-const DATABASE_NAME = 'ColorPalettesCluster';
+// const DATABASE_NAME = 'ColorPalettesCluster';
 
 const config = {
     development: {
@@ -24,7 +24,8 @@ const config = {
     },
     production: {
         PORT: process.env.PORT || 443,
-        DB_URI: process.env.DATABASE_URI,
+        DB_URI: 'mongodb+srv://mega:megacluster@colorpalettescluster.pzuksw4.mongodb.net/?retryWrites=true&w=majority',
+        // DB_URI: process.env.DATABASE_URI,
         SALT_ROUNDS: 10,
         SECRET: 'STAVAMNOGOSOLENO',
         COOKIE_NAME: 'TOKEN',

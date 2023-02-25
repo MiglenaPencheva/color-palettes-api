@@ -2,38 +2,33 @@ const express = require('express');
 require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-const connectDB = require('./config/mongoose');
 const { DB_URI } = require('./config/config');
-
-const cors = require('cors');
-const corsOptions = require('./config/corsOptions');
+console.log(DB_URI);
 const { PORT } = require('./config/config');
 
+const cors = require('./config/cors');
 const auth = require('./middleware/auth');
 const colorPalettesController = require('./controllers/colorPalettesController');
 const pickerController = require('./controllers/pickerController');
 const authController = require('./controllers/authController');
 
 console.log(process.env.NODE_ENV);
-console.log(DB_URI);
 
-connectDB();
-
-// async function start() {
-//     try {
-//         await mongoose.connect(DB_URI);
-//         console.log('DB ready');
-//     } catch (error) {
-//         console.log('DB connection failed');
-//         console.log(error);
-//         process.exit(1);
-//     }
-// }
-// start();
+start();
+async function start() {
+    try {
+        await mongoose.connect(DB_URI);
+        console.log('DB ready');
+    } catch (error) {
+        console.log('DB connection failed');
+        console.log(error);
+        // process.exit(1);
+    }
+}
 
 const app = express();
 
-app.use(cors(corsOptions));                //{ exposedHeaders: 'Authorization' }
+app.use(cors());                //{ exposedHeaders: 'Authorization' }
 app.use(auth());
 app.use('/uploads', express.static('uploads'));
 // app.use(express.json());
