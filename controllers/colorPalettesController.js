@@ -72,7 +72,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         const file = req.file.path;
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        imageFile = 'https://megacolormix.onrender.com/' + file;
+        imageFile = 'https://coloralettes-api.onrender.com/' + file;
         
         // const item = { title, category, colors,  };
         const item = { title, category, colors, imageFile };
