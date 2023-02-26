@@ -5,14 +5,13 @@ const { getAll, create, like, update, remove } = require('../services/colorPalet
 const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
-const path = require('path');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, '../uploads');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '--' + path.extname(file.originalname));
+        cb(null, Date.now() + '--' + file.originalname);
         // cb(null, new Date() + file.originalname);
     }
 });
