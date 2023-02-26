@@ -23,7 +23,7 @@ const config = {
         COOKIE_NAME: 'TOKEN',
     },
     production: {
-        PORT: process.env.PORT || 10000,
+        PORT: process.env.PORT || 443,
         DB_URI: process.env.DATABASE_URI,
         SALT_ROUNDS: 10,
         SECRET: 'STAVAMNOGOSOLENO',
