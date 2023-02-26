@@ -5,19 +5,20 @@ const { getAll, create, like, update, remove } = require('../services/colorPalet
 const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
+const path = require('path');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './uploads');
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '--' + file.originalname);
+        cb(null, Date.now() + '--' + path.extname(file.originalname));
         // cb(null, new Date() + file.originalname);
     }
 });
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 1024 * 1024 * 15 },
+    limits: { fileSize: 1024 * 1024 * 5 },
     // fileFilter: (req, file, cb) => {
     //     if (file.mimetype === "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
     //         cb(null, true);
