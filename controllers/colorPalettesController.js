@@ -70,13 +70,13 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (colors == '') throw { message: 'Choose at least one color' }
 
         const file = req.file.path;
+
         console.log(file);
         console.log(file.name);
+        
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        // const imageFile = 'https://coloralettes-api.onrender.com/' + file;
-        
-        const imageFile = 'iiimmmaaagggeee'
+        const imageFile = 'https://coloralettes-api.onrender.com/' + file;
 
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
