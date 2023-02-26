@@ -8,7 +8,7 @@ const preload = require('../middleware/preload');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '../uploads');
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '--' + file.originalname);
@@ -71,9 +71,6 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         const file = req.file.path;
 
-        console.log(file);
-        console.log(file.name);
-        
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
         const imageFile = 'https://coloralettes-api.onrender.com/' + file;
