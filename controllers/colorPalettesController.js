@@ -73,9 +73,9 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        // const imageFile = 'https://coloralettes-api.onrender.com/' + file;
+        const imageFile = 'https://coloralettes-api.onrender.com/' + file;
 
-        const item = { title, category, colors, imageFile: file };
+        const item = { title, category, colors, imageFile };
         item.likedBy = [];
         item.creator = req.user._id;
 
