@@ -3,7 +3,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 const { DB_URI } = require('./config/config');
-console.log(DB_URI);
 const { PORT } = require('./config/config');
 
 const cors = require('./config/cors');
