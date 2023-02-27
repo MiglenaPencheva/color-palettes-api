@@ -1,5 +1,5 @@
 const router = require('express').Router();
-// const fs = require('fs');
+const fs = require('fs');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
@@ -73,7 +73,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         if (file == '') throw { message: 'Image is required' }
         // imageFile = 'http://localhost:5500/' + file;
-        imageFile = 'https://megacolormix.onrender.com/' + file;
+        imageFile = 'https://coloralettes-api.onrender.com/' + file;
 
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
