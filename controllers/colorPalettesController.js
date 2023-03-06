@@ -54,6 +54,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         //     req.file.mimetype != '.png') {
         //     throw { message: 'Invalid file type' };
         // }
+        console.log(req.body);
         const { title, category, colors } = req.body;
 
         // const decodedData = Buffer.from(blob, 'base64');
@@ -69,6 +70,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
 
+        console.log(req.file);
         const file = req.file.path;
 
         if (file == '') throw { message: 'Image is required' }
