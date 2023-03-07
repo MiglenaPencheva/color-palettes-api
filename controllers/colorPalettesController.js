@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const fs = require('fs');
+const path = require('path');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
@@ -8,11 +9,12 @@ const preload = require('../middleware/preload');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './uploads');
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '--' + file.originalname);
-        // cb(null, new Date() + file.originalname);
+        const ext = path.extname(file.originalname);
+        const filename = `${file.fieldname}-${Date.now()}--${ext}`;
+        cb(null, filename);
     }
 });
 const upload = multer({
@@ -29,8 +31,12 @@ const upload = multer({
 });
 
 router.get('/', async (req, res) => {
-    const data = await getAll(req.query.search);
-    res.json(data);
+    try {
+        const data = await getAll(req.query.search);
+        res.json(data);
+    } catch (error) {
+        res.status(error.status || 400).json({ message: error.message });
+    }
 });
 
 // router.get('/my', isAuth(), async (req, res) => {
@@ -59,7 +65,6 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         // const decodedData = Buffer.from(blob, 'base64');
         // console.log(decodedData);
-
         // const imageFile = fs.writeFile('image.png', blob, function (err) {
         //     console.log('File created');
         // });
@@ -71,16 +76,13 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (colors == '') throw { message: 'Choose at least one color' }
 
         console.log(req.file);
-        const file = req.file.path;
-
+        const imageFile = req.file.path;
         if (file == '') throw { message: 'Image is required' }
-        // imageFile = 'http://localhost:5500/' + file;
-        imageFile = 'https://colorpalettes-api.onrender.com/' + file;
-
+        
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
         item.creator = req.user._id;
-
+        
         const result = await create(item);
         res.status(201).json(result);
     } catch (error) {

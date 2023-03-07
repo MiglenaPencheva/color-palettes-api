@@ -5,7 +5,10 @@ module.exports = () => async (req, res, next) => {
 
     try {
         const item = await getOne(id).lean();
+
         item._ownerId = item.creator;
+        // item.imageFile.toString('base64');
+
         res.locals.item = item;        
         next();
 
