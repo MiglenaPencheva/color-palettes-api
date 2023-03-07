@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         // const ext = getFileExtension(file.originalname);
-        const filename = `${Date.now()}--${ext}`;
+        const filename = `${__dirname}/public--${Date.now()}--${ext}`;
         cb(null, filename);
     }
 });
@@ -34,9 +34,6 @@ const upload = multer({
 router.get('/', async (req, res) => {
     try {
         const data = await getAll(req.query.search);
-        for (const item of data) {
-            item.imageFile = path.join(__dirname, '/public/', item.filename);
-        }
         res.json(data);
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message });
