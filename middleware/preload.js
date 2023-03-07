@@ -7,6 +7,7 @@ module.exports = () => async (req, res, next) => {
         const item = await getOne(id).lean();
 
         item._ownerId = item.creator;
+        item.imageFile = path.join(__dirname, '/public/', item.filename);
         // item.imageFile.toString('base64');
 
         res.locals.item = item;        
