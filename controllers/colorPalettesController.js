@@ -9,7 +9,7 @@ const preload = require('../middleware/preload');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'https://colorpalettes-api.onrender.com/uploads');
+        cb(null, 'https://colorpalettes-api.onrender.com/uploads/');
     },
     filename: (req, file, cb) => {
         // const ext = path.extname(file.originalname);
@@ -76,9 +76,9 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
 
-        console.log(req.file);
-        const imageFile = req.file.path;
-        if (imageFile == '') throw { message: 'Image is required' }
+        const file = req.file.path;
+        if (file == '') throw { message: 'Image is required' }
+        imageFile = 'https://colorpalettes-api.onrender.com/' + file;
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
