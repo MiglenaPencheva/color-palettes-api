@@ -1,5 +1,5 @@
 const router = require('express').Router();
-// const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
@@ -9,12 +9,12 @@ const preload = require('../middleware/preload');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'https://colorpalettes-api.onrender.com/uploads');
     },
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
+        // const ext = path.extname(file.originalname);
         // const ext = getFileExtension(file.originalname);
-        const filename = `${__dirname}/public--${Date.now()}--${ext}`;
+        const filename = Date.now() + '-' + file.originalname;
         cb(null, filename);
     }
 });
@@ -78,7 +78,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         console.log(req.file);
         const imageFile = req.file.path;
-        if (file == '') throw { message: 'Image is required' }
+        if (imageFile == '') throw { message: 'Image is required' }
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
