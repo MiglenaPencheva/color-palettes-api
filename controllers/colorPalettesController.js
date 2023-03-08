@@ -9,12 +9,12 @@ const preload = require('../middleware/preload');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'https://colorpalettes-api.onrender.com/uploads/');
+        cb(null, './uploads');
     },
     filename: (req, file, cb) => {
         // const ext = path.extname(file.originalname);
         // const ext = getFileExtension(file.originalname);
-        const filename = Date.now() + '-' + file.originalname;
+        const filename = Date.now() + '--' + file.originalname;
         cb(null, filename);
     }
 });
