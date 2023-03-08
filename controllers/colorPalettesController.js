@@ -78,7 +78,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
 
         const file = req.file.path;
         if (file == '') throw { message: 'Image is required' }
-        imageFile = 'https://colorpalettes-api.onrender.com/' + file;
+        const imageFile = 'https://colorpalettes-api.onrender.com/' + file;
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
