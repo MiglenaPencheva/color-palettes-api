@@ -1,25 +1,25 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
 const preload = require('../middleware/preload');
 
 const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads');
-    },
-    filename: (req, file, cb) => {
-        // const ext = path.extname(file.originalname);
-        // const ext = getFileExtension(file.originalname);
-        const filename = Date.now() + '--' + file.originalname;
-        cb(null, filename);
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads');
+//     },
+//     filename: (req, file, cb) => {
+//         // const ext = path.extname(file.originalname);
+//         // const ext = getFileExtension(file.originalname);
+//         const filename = Date.now() + '--' + file.originalname;
+//         cb(null, filename);
+//     }
+// });
+
 const upload = multer({
-    storage: storage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 1024 * 1024 * 5 },
     // fileFilter: (req, file, cb) => {
     //     if (file.mimetype === "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
@@ -52,33 +52,14 @@ router.get('/', async (req, res) => {
 
 router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
-        // if (req.file == undefined) throw { message: 'No image available' }
-        // if (req.file.size >= 1024 * 1024 * 10) {
-        //     throw { message: 'Image too big' } 
-        // }
-        // if (req.file.mimetype != '.jpeg' ||
-        //     req.file.mimetype != '.jpg' ||
-        //     req.file.mimetype != '.png') {
-        //     throw { message: 'Invalid file type' };
-        // }
-        console.log(req.body);
         const { title, category, colors } = req.body;
-
-        // const decodedData = Buffer.from(blob, 'base64');
-        // console.log(decodedData);
-        // const imageFile = fs.writeFile('image.png', blob, function (err) {
-        //     console.log('File created');
-        // });
-        // console.log(imageFile);
-
         if (!title) throw { message: 'Title is required' };
         if (title.length > 100) throw { message: 'Title should be less than 100 characters' };
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
 
-        const file = req.file.path;
-        if (file == '') throw { message: 'Image is required' }
-        const imageFile = 'https://colorpalettes-api.onrender.com/' + file;
+        const fileImage = req.file.buffer;
+        if (fileImage == '') throw { message: 'Image is required' }
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];

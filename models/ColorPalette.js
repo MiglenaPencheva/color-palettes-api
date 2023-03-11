@@ -18,8 +18,9 @@ const colorPaletteScheme = new mongoose.Schema({
         required: true,
     },
     imageFile: {
-        type: String,
-        required: ['Image is required']
+        type: Buffer,
+        required: ['Image is required'],
+        contentType: String
     },
     // contentType: String,
     // imageUrl: {
