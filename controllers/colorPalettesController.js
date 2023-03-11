@@ -1,5 +1,4 @@
 const router = require('express').Router();
-// const fs = require('fs');
 
 const { getAll, create, like, update, remove } = require('../services/colorPalettesService');
 const { isAuth, isOwner } = require('../middleware/guards');
@@ -59,10 +58,7 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (colors == '') throw { message: 'Choose at least one color' }
 
         if (req.file.buffer == '') throw { message: 'Image is required' }
-        const imageFile = {
-            data: req.file.buffer,
-            contentType: req.file.mimeType
-        };
+        const imageFile = req.file.buffer;
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
