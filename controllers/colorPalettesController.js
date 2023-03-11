@@ -39,16 +39,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// router.get('/my', isAuth(), async (req, res) => {
-//     const data = await getMine(req.user._id);
-//     res.json(data);
-// });
-
-// router.get('/favorites', isAuth(), async (req, res) => {
-//     const data = await getFavorites(req.user._id);
-//     res.json(data);
-// });
-
 router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
         const { title, category, colors } = req.body;
