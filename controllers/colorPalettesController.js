@@ -58,8 +58,11 @@ router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) =>
         if (!category || category == 'Choose category') throw { message: 'Category is required' };
         if (colors == '') throw { message: 'Choose at least one color' }
 
-        const imageFile = req.file.buffer;
-        if (imageFile == '') throw { message: 'Image is required' }
+        if (req.file.buffer == '') throw { message: 'Image is required' }
+        const imageFile = {
+            data: req.file.buffer,
+            contentType: req.file.mimeType
+        };
         
         const item = { title, category, colors, imageFile };
         item.likedBy = [];
