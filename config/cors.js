@@ -1,5 +1,5 @@
 module.exports = () => (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://megacolormix.onrender.com');
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.megacolormix.com');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, HEAD, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Authorization, Authorization, x-authorization');
     next();
