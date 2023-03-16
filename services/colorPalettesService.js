@@ -4,7 +4,7 @@ async function getAll(query) {
     return await ColorPalette
         .find({ title: { $regex: query || '', $options: 'i' } })
         .sort({ 'created_at': -1 })
-        .allowDiskUse(true)
+        // .allowDiskUse(true)
         .lean();
 }
 

@@ -44,4 +44,6 @@ const colorPaletteScheme = new mongoose.Schema({
         }
     });
 
+colorPaletteScheme.index({ created_at: -1 });
+
 module.exports = mongoose.model('Product', colorPaletteScheme);
