@@ -32,7 +32,7 @@ const upload = multer({
 
 router.get('/', async (req, res) => {
     try {
-        const data = await getAll(req.query.search);
+        const { data, totalPages } = await getAll(req.query.search, 1, 10);
         res.json(data);
     } catch (error) {
         res.status(error.status || 400).json({ message: error.message });

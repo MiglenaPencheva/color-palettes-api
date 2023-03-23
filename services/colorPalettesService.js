@@ -1,11 +1,16 @@
 const ColorPalette = require('../models/ColorPalette');
 
-async function getAll(query) {
-    return await ColorPalette
+async function getAll(query, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    const count = await ColorPalette.countDocuments();
+    const result = await ColorPalette
         .find({ title: { $regex: query || '', $options: 'i' } })
         .sort({ 'created_at': -1 })
-        // .allowDiskUse(true)
+        .skip(skip)
+        .limit(limit)
         .lean();
+    const totalPages = Math.ceil(count / limit);
+    return { result, totalPages };
 }
 
 async function create(item) {
