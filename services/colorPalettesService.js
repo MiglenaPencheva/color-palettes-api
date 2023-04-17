@@ -57,6 +57,7 @@ async function remove(itemId) {
 
 module.exports = {
     getAll,
+    getAllByPages,
     getOne,
     create,
     update,
