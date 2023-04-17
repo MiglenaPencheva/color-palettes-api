@@ -30,14 +30,23 @@ const upload = multer({
     // }
 });
 
+// router.get('/', async (req, res) => {
+//     try {
+//         const data = await getAll(req.query.search);
+//         res.json(data);
+//     } catch (error) {
+//         res.status(error.status || 400).json({ message: error.message });
+//     }
+// });
+
 router.get('/', async (req, res) => {
     try {
-        const data = await getAll(req.query.search);
-        res.json(data);
+      const data = await getAll(req.query.search, req.query.page || 1);
+      res.json(data);
     } catch (error) {
-        res.status(error.status || 400).json({ message: error.message });
+      res.status(error.status || 400).json({ message: error.message });
     }
-});
+  });
 
 router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
