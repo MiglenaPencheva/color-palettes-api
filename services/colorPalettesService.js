@@ -1,23 +1,21 @@
 const ColorPalette = require('../models/ColorPalette');
 
-// async function getAll(query) {
-//     return await ColorPalette
-//         .find({ title: { $regex: query || '', $options: 'i' } })
-//         .sort({ 'created_at': -1 })
-//         .lean();
-// }
+async function getAll() {
+    return await ColorPalette
+        .find()
+        .sort({ 'created_at': -1 })
+        .lean();
+}
 
-async function getAll(query, page) {
+async function getAllByPages(page) {
     const pageSize = 6;
     const skip = (page - 1) * pageSize;
-    const searchQuery = { title: { $regex: query || '', $options: 'i' } };
-    const count = await ColorPalette.countDocuments(searchQuery);
-    const palettes = await ColorPalette.find(searchQuery)
+    return await ColorPalette
+        .find()
         .sort({ 'created_at': -1 })
         .skip(skip)
         .limit(pageSize)
         .lean();
-    return { count, palettes };
 }
 
 async function create(item) {
