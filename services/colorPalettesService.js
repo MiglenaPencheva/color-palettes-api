@@ -1,20 +1,9 @@
 const ColorPalette = require('../models/ColorPalette');
 
-// async function getAll() {
-//     return await ColorPalette
-//         .find()
-//         .sort({ 'created_at': -1 })
-//         .lean();
-// }
-
-async function getAllByPages(page) {
-    const pageSize = 6;
-    const skip = (page - 1) * pageSize;
+async function getAll(query) {
     return await ColorPalette
-        .find()
+        .find({ title: { $regex: query || '', $options: 'i' } })
         .sort({ 'created_at': -1 })
-        .skip(skip)
-        .limit(pageSize)
         .lean();
 }
 
@@ -56,8 +45,7 @@ async function remove(itemId) {
 }
 
 module.exports = {
-    // getAll,
-    getAllByPages,
+    getAll,
     getOne,
     create,
     update,
