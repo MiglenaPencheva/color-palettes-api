@@ -1,11 +1,11 @@
 const ColorPalette = require('../models/ColorPalette');
 
-async function getAll() {
-    return await ColorPalette
-        .find()
-        .sort({ 'created_at': -1 })
-        .lean();
-}
+// async function getAll() {
+//     return await ColorPalette
+//         .find()
+//         .sort({ 'created_at': -1 })
+//         .lean();
+// }
 
 async function getAllByPages(page) {
     const pageSize = 6;
@@ -56,7 +56,7 @@ async function remove(itemId) {
 }
 
 module.exports = {
-    getAll,
+    // getAll,
     getAllByPages,
     getOne,
     create,

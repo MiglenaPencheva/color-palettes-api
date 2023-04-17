@@ -39,14 +39,14 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
-    try {
-        const data = await getAll();
-        res.json(data);
-    } catch (error) {
-        res.status(error.status || 400).json({ message: error.message });
-    }
-});
+// router.get('/', async (req, res) => {
+//     try {
+//         const data = await getAll();
+//         res.json(data);
+//     } catch (error) {
+//         res.status(error.status || 400).json({ message: error.message });
+//     }
+// });
 
 router.post('/', isAuth(), upload.single('imageFile'), async (req, res, next) => {
     try {
